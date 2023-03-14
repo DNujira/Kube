@@ -1,6 +1,6 @@
 # Kube
 
-**Install**
+## Install
 - Kubectl
 - miniKubes
 - Docker Desktop
