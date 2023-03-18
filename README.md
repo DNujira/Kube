@@ -1,6 +1,6 @@
 # Kube
 
-## ขั้นตอนการติดตั้ง
+# ขั้นตอนการติดตั้ง
 
 <details>
   <summary><b>ขั้นตอนการติดตั้ง kubectl</b></summary>
@@ -79,8 +79,7 @@ minikube
   </details>
   
   
-  <details>
-  <summary><b>Traefik Deploy</b></summary>
+# Traefik Deploy
   
   ### REF : https://github.com/iamapinan/kubeplay-traefik
   **เพิ่ม 127.0.0.1 traefik.spcn18.local ในไฟล์ที่ชื่อ host ที่ path C:\Windows\System32\drivers\etc**
@@ -113,7 +112,7 @@ minikube
   **ผลลัพธ์**
   ![image](https://user-images.githubusercontent.com/117592447/226135109-6c677364-7f6d-41cb-8e14-0c779f5c8ed8.png)
   
-  **6. สร้าง tunnel เพื่อใช้เป็น EXTERNAL-IP โดยใช้คำสั่ง
+  **6. สร้าง tunnel เพื่อใช้เป็น EXTERNAL-IP โดยใช้คำสั่ง**
   ```
   minikube tunnel
   ```
@@ -127,7 +126,7 @@ minikube
   ```
   ![image](https://user-images.githubusercontent.com/117592447/226135981-4f1b21eb-f62a-49c9-8237-3142b5e29341.png)
 
-  **เมื่อ run เสร็จแล้วจะไฟล์ dashboard-secret.yaml มา และนำข้อมูลตรง user ไปใส่ในไฟล์ traefik-dashboard.yaml ให้ตรงกัน
+  **เมื่อ run เสร็จแล้วจะไฟล์ dashboard-secret.yaml มา และนำข้อมูลตรง user ไปใส่ในไฟล์ traefik-dashboard.yaml ให้ตรงกัน**
   
   ![image](https://user-images.githubusercontent.com/117592447/226136289-d53718c2-59cf-41e1-8367-cd7829915f59.png)
   ![image](https://user-images.githubusercontent.com/117592447/226136168-1fded7f3-a7dc-4354-8cb9-28ee63495cfd.png)
@@ -143,7 +142,7 @@ minikube
 
   </details>
   
-## deploy rancher/hello-world
+# deploy rancher/hello-world
 **เพิ่ม 127.0.0.1 web.spcn18.local ในไฟล์ที่ชื่อ host ที่ path C:\Windows\System32\drivers\etc**
 
 ![image](https://user-images.githubusercontent.com/117592447/226137281-6c14884b-5f29-4997-8f18-d0e893a436d2.png)
@@ -192,4 +191,43 @@ spec:
 ```
 </details>
 
- **1. สร้างไฟล์ service.yaml และเพิ่มโค้ดด้านล่างลงไปในไฟล์**
+ **2. สร้างไฟล์ service.yaml และเพิ่มโค้ดด้านล่างลงไปในไฟล์**
+<details>
+  <summary>CODE</summary>
+  
+```
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: service-ingress
+  namespace: spcn18
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - match: Host(`web.spcn18.local`)
+    kind: Rule
+    services:
+    - name: rancher-service
+      port: 80
+
+```
+</details>
+
+**3. deploy ไฟล์ rancherhello-world.yaml**
+```
+kubectl apply -f rancherhello-world.yaml     
+```
+**4. deploy ไฟล์ service.yaml**
+```
+kubectl apply -f service.yaml
+```
+**5. สร้าง tunnel โดยใช้คำสั่ง**
+```
+minikube tunnel
+```
+ **ทดสอบว่า deploy สำเร็จหรือไม่โดยการใช้ domain ที่ตั้งไว้ (http://web.spcn18.local/)**
+ 
+  **ผลลัพธ์**
+  ![image](https://user-images.githubusercontent.com/117592447/226138556-9a410c45-271b-4815-9f01-da736caaaf04.png)
