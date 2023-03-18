@@ -83,6 +83,10 @@ minikube
   <summary><b>Traefik Deploy</b></summary>
   
   ### REF : https://github.com/iamapinan/kubeplay-traefik
+  **เพิ่ม 127.0.0.1 traefik.spcn18.local ในไฟล์ที่ชื่อ host ที่ path C:\Windows\System32\drivers\etc**
+  
+  ![image](https://user-images.githubusercontent.com/117592447/226135476-fd1f6f17-6e02-456d-b330-2c2f02d8641f.png)
+
   **1. Install Traefik โดยใช้คำสั่ง**
   ```
   kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.9/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
@@ -109,5 +113,83 @@ minikube
   **ผลลัพธ์**
   ![image](https://user-images.githubusercontent.com/117592447/226135109-6c677364-7f6d-41cb-8e14-0c779f5c8ed8.png)
   
-  **6. สร้าง tunnel เพื่อ
+  **6. สร้าง tunnel เพื่อใช้เป็น EXTERNAL-IP โดยใช้คำสั่ง
+  ```
+  minikube tunnel
+  ```
+  **7. สร้างไฟล์ secret โดยใช้คำสั่งด้านล่าง (run ใน bash)**
+  ```
+  htpasswd -nB user | tee auth-secret //ตรง user สามารถเปลี่ยนได้
+  ```
+  ```
+  kubectl create secret generic -n กำหนดชื่อ dashboard-auth-secret \
+   --from-file=users=auth-secret -o yaml --dry-run=client | tee dashboard-secret.yaml
+  ```
+  ![image](https://user-images.githubusercontent.com/117592447/226135981-4f1b21eb-f62a-49c9-8237-3142b5e29341.png)
+
+  **เมื่อ run เสร็จแล้วจะไฟล์ dashboard-secret.yaml มา และนำข้อมูลตรง user ไปใส่ในไฟล์ traefik-dashboard.yaml ให้ตรงกัน
+  
+  ![image](https://user-images.githubusercontent.com/117592447/226136289-d53718c2-59cf-41e1-8367-cd7829915f59.png)
+  ![image](https://user-images.githubusercontent.com/117592447/226136168-1fded7f3-a7dc-4354-8cb9-28ee63495cfd.png)
+
+  **8. Deploy โดยใช้คำสั่ง**
+  ```
+  kubectl apply -f traefik-dashboard.yaml
+  ```
+  **ทดสอบว่า deploy traefik สำเร็จหรือไม่โดยการใช้ domain ที่ตั้งไว้ (https://traefik.spcn18.local/dashboard/#/)**
+  **ผลลัพธ์**
+  
+  ![image](https://user-images.githubusercontent.com/117592447/226136393-f9b4be39-76b9-4c45-bb4b-659bad6524de.png)
+
   </details>
+  
+## deploy rancher/hello-world
+**เพิ่ม 127.0.0.1 web.spcn18.local ในไฟล์ที่ชื่อ host ที่ path C:\Windows\System32\drivers\etc**
+
+![image](https://user-images.githubusercontent.com/117592447/226137281-6c14884b-5f29-4997-8f18-d0e893a436d2.png)
+
+  **1. สร้างไฟล์ rancher-hello-world.yaml และเพิ่มโค้ดด้านล่างลงไปในไฟล์**
+<details>
+  <summary>CODE</summary>
+  
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rancher-deployment
+  namespace: spcn18
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rancher
+  template:
+    metadata:
+      labels:
+        app: rancher
+    spec:
+      containers:
+      - name: rancher
+        image: rancher/hello-world
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rancher-service
+  labels:
+    name: rancher-service
+  namespace: spcn18
+spec:
+  selector:
+    app: rancher
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+```
+</details>
+
+ **1. สร้างไฟล์ service.yaml และเพิ่มโค้ดด้านล่างลงไปในไฟล์**
