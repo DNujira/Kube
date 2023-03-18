@@ -3,7 +3,7 @@
 # ขั้นตอนการติดตั้ง
 
 <details>
-  <summary><b>ขั้นตอนการติดตั้ง kubectl</b></summary>
+  <summary><h3>ขั้นตอนการติดตั้ง kubectl</h3></summary>
   
 ### REF : https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/
 
@@ -23,7 +23,7 @@ kubectl version --client --output=yaml  //ข้อมูลแบบไฟล�
 </details>
 
 <details>
-  <summary><b>ขั้นตอนการติดตั้ง minikube</b></summary>
+  <summary><h3>ขั้นตอนการติดตั้ง minikube</h3></summary>
   
   ### REF : https://minikube.sigs.k8s.io/docs/start/
 **1. เข้าไปในเว็บไซต์และเลือก spec ให้ตรงกับเครื่องของเรา หลังจากนั้นจะมีคำสั่งติดตั้งมาให้**
@@ -54,10 +54,25 @@ minikube
 
 ![image](https://user-images.githubusercontent.com/117592447/226133683-489e7508-8e75-4544-b3f8-8f31a85924f5.png)
 
+ ## ตัวอย่างการใช้ minikube Deploy applications(Service)
+  ### REF : https://minikube.sigs.k8s.io/docs/start/
+  
+  ![image](https://user-images.githubusercontent.com/117592447/226139952-071ce784-6d54-41f2-a79f-4c9255b601e9.png)
+
+  
+  **คำสั่ง deploy**
+  ```
+  kubectl create deployment hello-minikube --image=kicbase/echo-server:1.0
+  kubectl expose deployment hello-minikube --type=NodePort --port=8080
+  ```
+  **ผลลัพธ์**
+  
+  ![image](https://user-images.githubusercontent.com/117592447/226139909-f5580cb0-33d6-43b4-8955-199065040596.png)
+
   </details>
   
   <details>
-  <summary><b>ขั้นตอนการติดตั้ง docker desktop</b></summary>
+  <summary><h3>ขั้นตอนการติดตั้ง docker desktop</h3></summary>
   
   ### REF : https://docs.docker.com/desktop/install/windows-install/
   
@@ -141,7 +156,9 @@ minikube
   ![image](https://user-images.githubusercontent.com/117592447/226136393-f9b4be39-76b9-4c45-bb4b-659bad6524de.png)
 
   </details>
-  
+ 
+<br>
+
 # deploy rancher/hello-world
 **เพิ่ม 127.0.0.1 web.spcn18.local ในไฟล์ที่ชื่อ host ที่ path C:\Windows\System32\drivers\etc**
 
